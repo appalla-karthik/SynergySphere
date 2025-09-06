@@ -1,4 +1,5 @@
 {% load static %}
+{% load custom_filters %}
 <!DOCTYPE html>
 <html lang="en" class="dark">
 <head>
@@ -6,14 +7,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>SynergySphere - Project Detail</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = { darkMode: 'class' }
-  </script>
+  <script>tailwind.config = { darkMode: 'class' }</script>
   <style>
-    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
-    .fade-in { animation: fadeIn 0.5s ease-in-out; }
-    @keyframes fadeIn { from { opacity:0; transform:translateY(10px);} to {opacity:1; transform:translateY(0);} }
-
     .tooltip .tooltip-text {
       visibility: hidden;
       opacity: 0;
@@ -36,108 +31,97 @@
     }
   </style>
 </head>
-<body class="bg-gray-100 dark:bg-black text-gray-900 dark:text-white min-h-screen flex transition-colors duration-500">
+<body class="bg-gray-100 dark:bg-black text-gray-900 dark:text-white min-h-screen flex transition">
 
-  <!-- Sidebar -->
-  <aside id="sidebar" class="fixed top-0 left-0 h-screen w-64 bg-white dark:bg-neutral-900 shadow-xl border-r border-gray-200 dark:border-gray-800 flex flex-col justify-between p-4 transition-all duration-500 ease-in-out">
+  <!-- ✅ Sidebar (same as new task page) -->
+  <aside id="sidebar" class="fixed top-0 left-0 h-screen w-64 bg-white dark:bg-neutral-900 border-r border-gray-200 dark:border-gray-800 flex flex-col justify-between p-4 transition-all duration-500 ease-in-out">
     <div>
-      <!-- Collapse/Expand Button -->
-      <button id="toggleBtn" class="flex items-center gap-3 mb-6 px-3 py-2 rounded-lg bg-gray-100 dark:bg-neutral-800 hover:bg-gray-200 dark:hover:bg-neutral-700 hover:scale-105 transition w-full">
-        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-gray-700 dark:text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
-        </svg>
-        <span class="font-medium nav-text">Collapse</span>
+      <!-- Collapse Btn -->
+      <button id="toggleBtn" class="flex items-center gap-3 mb-6 px-3 py-2 rounded-lg bg-gray-100 dark:bg-neutral-800 hover:bg-gray-200 dark:hover:bg-neutral-700 transition w-full">
+        ☰ <span class="font-medium nav-text">Collapse</span>
       </button>
 
       <!-- Brand -->
-      <h1 id="brandTitle" class="text-2xl font-bold mb-8 text-gray-800 dark:text-white tracking-tight bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent transition">
+      <h1 id="brandTitle" class="text-xl font-bold mb-8 text-gray-800 dark:text-white tracking-tight bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent transition">
         SynergySphere
       </h1>
 
-      <!-- Navigation -->
+      <!-- Nav -->
       <nav class="space-y-4">
         <div class="tooltip relative flex items-center">
-          <a href="#" class="flex items-center gap-3 px-4 py-2 rounded-xl hover:bg-blue-100 dark:hover:bg-blue-900 hover:scale-105 transition transform">
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7h4l2 3h12v9H3V7z"/>
-            </svg>
-            <span class="font-medium nav-text">Projects</span>
+          <a href="{% url 'dashboard' %}" class="flex items-center gap-3 px-4 py-2 rounded-xl hover:bg-blue-100 dark:hover:bg-blue-900 transition">
+            📂 <span class="font-medium nav-text">Projects</span>
           </a>
           <span class="tooltip-text">Projects</span>
         </div>
         <div class="tooltip relative flex items-center">
-          <a href="#" class="flex items-center gap-3 px-4 py-2 rounded-xl hover:bg-green-100 dark:hover:bg-green-900 hover:scale-105 transition transform">
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 11l3 3L22 4M2 12l7 7 13-13"/>
-            </svg>
-            <span class="font-medium nav-text">My Tasks</span>
+          <a href="{% url 'taskview' %}" class="flex items-center gap-3 px-4 py-2 rounded-xl hover:bg-green-100 dark:hover:bg-green-900 transition">
+            ✅ <span class="font-medium nav-text">My Tasks</span>
           </a>
           <span class="tooltip-text">My Tasks</span>
         </div>
       </nav>
     </div>
 
-    <!-- User + Dark Mode Toggle -->
+    <!-- Theme + User -->
     <div class="space-y-4">
       <div class="tooltip relative flex items-center">
-        <button id="themeToggle" class="flex items-center gap-3 px-4 py-2 rounded-xl bg-gray-200 dark:bg-neutral-700 text-gray-800 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-neutral-600 hover:scale-105 transition w-full">
-          <svg id="moonIcon" xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 dark:hidden transition" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12.79A9 9 0 0111.21 3a7 7 0 000 14A9 9 0 0121 12.79z" />
-          </svg>
-          <svg id="sunIcon" xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 hidden dark:inline transition" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v2m0 14v2m9-9h-2M5 12H3m15.364 6.364l-1.414-1.414M7.05 7.05L5.636 5.636m12.728 0l-1.414 1.414M7.05 16.95l-1.414 1.414" />
-          </svg>
-          <span class="text-sm nav-text">Toggle Theme</span>
+        <button id="themeToggle" class="flex items-center gap-3 px-4 py-2 rounded-xl bg-gray-200 dark:bg-neutral-700 hover:bg-gray-300 dark:hover:bg-neutral-600 w-full transition">
+          🌗 <span class="text-sm nav-text">Toggle Theme</span>
         </button>
         <span class="tooltip-text">Toggle Theme</span>
       </div>
       <div class="tooltip relative flex items-center">
-        <div class="flex items-center gap-3 p-3 bg-gray-100 dark:bg-neutral-800 rounded-xl shadow w-full hover:bg-gray-200 dark:hover:bg-neutral-700 hover:scale-105 transition transform">
-          <img src="{% static 'images/avatar.png' %}" alt="user" class="w-10 h-10 rounded-full border border-gray-300 dark:border-gray-700">
+        <div class="flex items-center gap-3 p-3 bg-gray-100 dark:bg-neutral-800 rounded-xl shadow w-full hover:bg-gray-200 dark:hover:bg-neutral-700 transition">
+          <img src="{% static 'images/avatar.png' %}" class="w-10 h-10 rounded-full">
           <div class="nav-text">
             <p class="font-semibold">Test User</p>
-            <p class="text-gray-500 dark:text-gray-400 text-sm">user@mail</p>
+            <p class="text-gray-500 text-sm dark:text-gray-400">user@mail</p>
           </div>
         </div>
-        <span class="tooltip-text">Test User</span>
+        <span class="tooltip-text">User Profile</span>
       </div>
     </div>
   </aside>
 
-  <!-- Main Content -->
+  <!-- ✅ Main -->
   <main id="mainContent" class="flex-1 ml-64 p-8 transition-all duration-500">
-    <!-- ✅ Top Bar -->
+    <!-- Top Bar -->
     <div class="flex justify-between items-center mb-10">
-      <p class="text-sm text-gray-500 dark:text-gray-400">Projects > <span class="font-medium text-gray-900 dark:text-white">RD Sales</span></p>
+      <p class="text-sm text-gray-500 dark:text-gray-400">
+        Projects > <span class="font-medium text-gray-900 dark:text-white">{{ project.name }}</span>
+      </p>
       <div class="flex items-center gap-4">
         <input id="searchInput" type="text" placeholder="Search..."
           class="px-4 py-2 rounded-xl bg-gray-200 dark:bg-neutral-800 text-black dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
-        <button id="newTaskBtn" class="px-5 py-2 bg-blue-500 text-white font-medium rounded-xl hover:bg-blue-600 hover:scale-105 transform shadow-md transition">
+        <a href="{% url 'new_task' project.id %}" class="px-5 py-2 bg-blue-500 text-white font-medium rounded-xl hover:bg-blue-600 hover:scale-105 transform shadow-md transition">
           + New Task
-        </button>
+        </a>
       </div>
     </div>
 
     <!-- ✅ Task Container -->
     <div id="taskContainer" class="grid grid-cols-1 md:grid-cols-3 gap-8">
-      <!-- Example Task Card -->
-      <div class="task-card bg-white dark:bg-neutral-900 rounded-2xl shadow-lg p-6 hover:shadow-2xl hover:shadow-blue-300/30 dark:hover:shadow-blue-500/30 hover:-translate-y-1 hover:scale-105 transition transform duration-300 fade-in">
+      {% for task in project.tasks.all %}
+      <div class="task-card bg-white dark:bg-neutral-900 rounded-2xl shadow-lg p-6 hover:shadow-2xl hover:shadow-blue-300/30 dark:hover:shadow-blue-500/30 hover:-translate-y-1 hover:scale-105 transition transform duration-300">
         <div class="flex gap-2 mb-3">
-          <span class="px-3 py-1 text-xs font-medium bg-green-100 text-green-600 rounded-full">Feedback</span>
-          <span class="px-3 py-1 text-xs font-medium bg-red-100 text-red-600 rounded-full">Bug</span>
+          {% for tag in task.tags|split:"," %}
+            <span class="px-3 py-1 text-xs font-medium bg-blue-100 text-blue-600 rounded-full">{{ tag }}</span>
+          {% endfor %}
         </div>
-        <p class="text-sm mb-2"><span class="font-bold">Project:</span> RD Sales</p>
-        <h3 class="font-semibold text-lg mb-3">Optimize Website Controllers</h3>
-        <div class="flex gap-2 mb-4">
-          <img src="https://learn.g2.com/hubfs/iStock-1135541613.jpg" class="rounded-lg w-20 h-20 object-cover">
-          <img src="https://wallpaperaccess.com/full/5137774.jpg" class="rounded-lg w-20 h-20 object-cover">
-          <img src="https://www.smartsheet.com/sites/default/files/2022-05/IC-Project-Management-Plan-Dashboard-Template.png" class="rounded-lg w-20 h-20 object-cover">
-        </div>
+        <p class="text-sm mb-2"><span class="font-bold">Project:</span> {{ project.name }}</p>
+        <h3 class="font-semibold text-lg mb-3">{{ task.name }}</h3>
+        {% if task.image %}
+          <img src="{{ task.image.url }}" class="rounded-lg w-full h-32 object-cover mb-3">
+        {% endif %}
         <div class="flex justify-between items-center">
-          <p class="text-sm text-gray-500 dark:text-gray-400">📅 21/03/22</p>
-          <img src="{% static 'images/avatar.png' %}" class="w-8 h-8 rounded-full border border-gray-300 dark:border-gray-700">
+          <p class="text-sm text-gray-500 dark:text-gray-400">📅 {{ task.deadline }}</p>
+          <span class="text-xs text-gray-400">{{ task.assignee }}</span>
         </div>
       </div>
+      {% empty %}
+      <p class="text-gray-400">No tasks yet. Create one!</p>
+      {% endfor %}
     </div>
   </main>
 
@@ -162,23 +146,12 @@
 
     themeToggle.addEventListener("click", () => {
       html.classList.toggle("dark");
+      localStorage.setItem("theme", html.classList.contains("dark") ? "dark" : "light");
     });
 
-    // ✅ Search + New Task functionality
-    const searchInput = document.getElementById("searchInput");
-    const taskContainer = document.getElementById("taskContainer");
-    const newTaskBtn = document.getElementById("newTaskBtn");
-
-    // Search filter
-    searchInput.addEventListener("input", () => {
-      const query = searchInput.value.toLowerCase();
-      const tasks = taskContainer.querySelectorAll(".task-card");
-      tasks.forEach(card => {
-        const text = card.innerText.toLowerCase();
-        card.style.display = text.includes(query) ? "block" : "none";
-      });
-    });;
+    if (localStorage.getItem("theme") === "dark") {
+      html.classList.add("dark");
+    }
   </script>
-
 </body>
 </html>

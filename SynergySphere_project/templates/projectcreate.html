@@ -6,72 +6,85 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>SynergySphere - New Project</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = { darkMode: 'class' }
-  </script>
+  <script>tailwind.config = { darkMode: 'class' }</script>
+  <style>
+    .tooltip .tooltip-text {
+      visibility: hidden;
+      opacity: 0;
+      position: absolute;
+      left: 110%;
+      top: 50%;
+      transform: translateY(-50%);
+      background: #111827;
+      color: #fff;
+      padding: 4px 8px;
+      border-radius: 6px;
+      font-size: 12px;
+      white-space: nowrap;
+      transition: opacity 0.3s;
+      pointer-events: none;
+    }
+    .collapsed .tooltip:hover .tooltip-text {
+      visibility: visible;
+      opacity: 1;
+    }
+  </style>
 </head>
-<body class="bg-gray-100 dark:bg-black text-gray-900 dark:text-white min-h-screen flex transition-colors duration-500">
+<body class="bg-gray-100 dark:bg-black text-gray-900 dark:text-white min-h-screen flex transition">
 
   <!-- Sidebar -->
-  <aside id="sidebar"
-    class="w-64 bg-white dark:bg-neutral-900 shadow-xl border-r border-gray-200 dark:border-gray-800 flex flex-col justify-between p-4 transition-all duration-500 ease-in-out">
+  <aside id="sidebar" class="fixed top-0 left-0 h-screen w-64 bg-white dark:bg-neutral-900 border-r border-gray-200 dark:border-gray-800 flex flex-col justify-between p-4 transition-all duration-500 ease-in-out">
     <div>
       <!-- Collapse Btn -->
-      <button id="toggleBtn"
-        class="flex items-center gap-3 mb-6 px-3 py-2 rounded-lg bg-gray-100 dark:bg-neutral-800 hover:bg-gray-200 dark:hover:bg-neutral-700 hover:scale-105 transition">
-        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-gray-700 dark:text-gray-300" fill="none"
-          viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
-        </svg>
-        <span class="font-medium nav-text">Collapse</span>
+      <button id="toggleBtn" class="flex items-center gap-3 mb-6 px-3 py-2 rounded-lg bg-gray-100 dark:bg-neutral-800 hover:bg-gray-200 dark:hover:bg-neutral-700 transition w-full">
+        ☰ <span class="font-medium nav-text">Collapse</span>
       </button>
 
       <!-- Brand -->
-      <h1 id="brandTitle"
-        class="text-2xl font-bold mb-8 text-gray-800 dark:text-white tracking-tight bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent">
+      <h1 id="brandTitle" class="text-xl font-bold mb-8 text-gray-800 dark:text-white tracking-tight bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent transition">
         SynergySphere
       </h1>
 
       <!-- Nav -->
       <nav class="space-y-4">
-        <a href="{% url 'dashboard' %}"
-          class="flex items-center gap-2 px-4 py-2 rounded-xl bg-gray-100 dark:bg-neutral-800 hover:bg-blue-100 dark:hover:bg-blue-900 hover:scale-105 transition">
-          <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-blue-500" fill="none" viewBox="0 0 24 24"
-            stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7h18M3 12h18M3 17h18"/>
-          </svg>
-          <span class="font-medium nav-text">Projects</span>
-        </a>
-        <a href="{% url 'taskview' %}"
-          class="flex items-center gap-2 px-4 py-2 rounded-xl bg-gray-100 dark:bg-neutral-800 hover:bg-green-100 dark:hover:bg-green-900 hover:scale-105 transition">
-          <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-green-500" fill="none" viewBox="0 0 24 24"
-            stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
-          </svg>
-          <span class="font-medium nav-text">My Tasks</span>
-        </a>
+        <div class="tooltip relative flex items-center">
+          <a href="{% url 'dashboard' %}" class="flex items-center gap-3 px-4 py-2 rounded-xl hover:bg-blue-100 dark:hover:bg-blue-900 transition">
+            📂 <span class="font-medium nav-text">Projects</span>
+          </a>
+          <span class="tooltip-text">Projects</span>
+        </div>
+        <div class="tooltip relative flex items-center">
+          <a href="{% url 'taskview' %}" class="flex items-center gap-3 px-4 py-2 rounded-xl hover:bg-green-100 dark:hover:bg-green-900 transition">
+            ✅ <span class="font-medium nav-text">My Tasks</span>
+          </a>
+          <span class="tooltip-text">My Tasks</span>
+        </div>
       </nav>
     </div>
 
     <!-- Theme + User -->
     <div class="space-y-4">
-      <button id="themeToggle"
-        class="flex items-center gap-3 px-4 py-2 rounded-xl bg-gray-200 dark:bg-neutral-700 text-gray-800 dark:text-gray-200 hover:scale-105 transition">
-        🌗 <span class="text-sm nav-text">Toggle Theme</span>
-      </button>
-      <div class="flex items-center gap-3 p-3 bg-gray-100 dark:bg-neutral-800 rounded-xl shadow">
-        <img src="{% static 'images/avatar.png' %}"
-          class="w-10 h-10 rounded-full border border-gray-300 dark:border-gray-700">
-        <div class="nav-text">
-          <p class="font-semibold">Test User</p>
-          <p class="text-gray-500 dark:text-gray-400 text-sm">user@mail</p>
+      <div class="tooltip relative flex items-center">
+        <button id="themeToggle" class="flex items-center gap-3 px-4 py-2 rounded-xl bg-gray-200 dark:bg-neutral-700 hover:bg-gray-300 dark:hover:bg-neutral-600 w-full transition">
+          🌗 <span class="text-sm nav-text">Toggle Theme</span>
+        </button>
+        <span class="tooltip-text">Toggle Theme</span>
+      </div>
+      <div class="tooltip relative flex items-center">
+        <div class="flex items-center gap-3 p-3 bg-gray-100 dark:bg-neutral-800 rounded-xl shadow w-full hover:bg-gray-200 dark:hover:bg-neutral-700 transition">
+          <img src="{% static 'images/avatar.png' %}" class="w-10 h-10 rounded-full">
+          <div class="nav-text">
+            <p class="font-semibold">Test User</p>
+            <p class="text-gray-500 text-sm dark:text-gray-400">user@mail</p>
+          </div>
         </div>
+        <span class="tooltip-text">User Profile</span>
       </div>
     </div>
   </aside>
 
   <!-- Main -->
-  <main class="flex-1 p-8">
+  <main id="mainContent" class="flex-1 ml-64 p-8 transition-all duration-500">
     <!-- Top bar -->
     <div class="flex justify-between items-center mb-8">
       <p class="text-sm text-gray-500 dark:text-gray-400">Projects >
@@ -81,12 +94,12 @@
         <!-- Discard -->
         <button type="button" id="discardBtn"
           class="px-5 py-2 bg-gray-300 dark:bg-neutral-700 text-gray-800 dark:text-gray-200 rounded-lg 
-                 hover:bg-gray-400 dark:hover:bg-neutral-600 hover:scale-105 shadow transition">
+                 hover:bg-gray-400 dark:hover:bg-neutral-600 shadow transition">
           Discard
         </button>
-        <!-- Save (inside form) -->
+        <!-- Save -->
         <button type="submit" form="projectForm"
-          class="px-5 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 shadow hover:shadow-lg hover:scale-105 transition">
+          class="px-5 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 shadow hover:shadow-lg transition">
           Save
         </button>
       </div>
@@ -94,23 +107,21 @@
 
     <!-- Form -->
     <form id="projectForm" action="{% url 'save_project' %}" method="POST" enctype="multipart/form-data"
-      class="space-y-6 max-w-3xl bg-white dark:bg-neutral-900 p-6 rounded-2xl shadow-xl hover:shadow-2xl transition">
+      class="space-y-6 max-w-3xl bg-white dark:bg-neutral-900 p-6 rounded-2xl shadow">
       {% csrf_token %}
 
       <!-- Project Name -->
       <div>
         <label class="block mb-2 font-medium">Project Name</label>
         <input type="text" name="name" required placeholder="Enter project name"
-          class="w-full px-4 py-2 rounded-lg bg-gray-100 dark:bg-neutral-800 text-black dark:text-white 
-                 border border-transparent focus:border-blue-500 focus:ring-2 focus:ring-blue-500 transition">
+          class="w-full px-4 py-2 rounded-lg bg-gray-100 dark:bg-neutral-800 text-black dark:text-white">
       </div>
 
       <!-- Tags -->
       <div>
         <label class="block mb-2 font-medium">Tags</label>
         <select name="tags" multiple
-          class="w-full px-4 py-2 rounded-lg bg-gray-100 dark:bg-neutral-800 text-black dark:text-white 
-                 border border-transparent focus:border-purple-500 focus:ring-2 focus:ring-purple-500 transition">
+          class="w-full px-4 py-2 rounded-lg bg-gray-100 dark:bg-neutral-800 text-black dark:text-white">
           <option>Frontend</option>
           <option>Backend</option>
           <option>UI/UX</option>
@@ -122,9 +133,7 @@
       <!-- Project Manager -->
       <div>
         <label class="block mb-2 font-medium">Project Manager</label>
-        <select name="manager" required
-          class="w-full px-4 py-2 rounded-lg bg-gray-100 dark:bg-neutral-800 text-black dark:text-white 
-                 border border-transparent focus:border-green-500 focus:ring-2 focus:ring-green-500 transition">
+        <select name="manager" required class="w-full px-4 py-2 rounded-lg bg-gray-100 dark:bg-neutral-800">
           <option value="">Choose a manager</option>
           <option>John Doe</option>
           <option>Jane Smith</option>
@@ -135,22 +144,20 @@
       <!-- Deadline -->
       <div>
         <label class="block mb-2 font-medium">Deadline</label>
-        <input type="date" name="deadline" required
-          class="w-full px-4 py-2 rounded-lg bg-gray-100 dark:bg-neutral-800 text-black dark:text-white 
-                 border border-transparent focus:border-yellow-500 focus:ring-2 focus:ring-yellow-500 transition">
+        <input type="date" name="deadline" required class="w-full px-4 py-2 rounded-lg bg-gray-100 dark:bg-neutral-800">
       </div>
 
       <!-- Priority -->
       <div>
         <label class="block mb-2 font-medium">Priority</label>
         <div class="flex gap-6">
-          <label class="flex items-center gap-2 cursor-pointer hover:scale-105 transition">
+          <label class="flex items-center gap-2 cursor-pointer">
             <input type="radio" name="priority" value="Low" required class="form-radio text-blue-500"> Low
           </label>
-          <label class="flex items-center gap-2 cursor-pointer hover:scale-105 transition">
+          <label class="flex items-center gap-2 cursor-pointer">
             <input type="radio" name="priority" value="Medium" class="form-radio text-yellow-500"> Medium
           </label>
-          <label class="flex items-center gap-2 cursor-pointer hover:scale-105 transition">
+          <label class="flex items-center gap-2 cursor-pointer">
             <input type="radio" name="priority" value="High" class="form-radio text-red-500"> High
           </label>
         </div>
@@ -159,17 +166,14 @@
       <!-- Image -->
       <div>
         <label class="block mb-2 font-medium">Image</label>
-        <input type="file" name="image" accept="image/*"
-          class="w-full px-4 py-2 rounded-lg bg-gray-100 dark:bg-neutral-800 text-black dark:text-white 
-                 border border-transparent focus:border-pink-500 focus:ring-2 focus:ring-pink-500 transition">
+        <input type="file" name="image" accept="image/*" class="w-full px-4 py-2 rounded-lg bg-gray-100 dark:bg-neutral-800">
       </div>
 
       <!-- Description -->
       <div>
         <label class="block mb-2 font-medium">Description</label>
         <textarea name="description" rows="5" placeholder="Write project description..."
-          class="w-full px-4 py-2 rounded-lg bg-gray-100 dark:bg-neutral-800 text-black dark:text-white 
-                 border border-transparent focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500 transition"></textarea>
+          class="w-full px-4 py-2 rounded-lg bg-gray-100 dark:bg-neutral-800"></textarea>
       </div>
     </form>
   </main>
@@ -178,20 +182,22 @@
   <script>
     const toggleBtn = document.getElementById("toggleBtn");
     const sidebar = document.getElementById("sidebar");
+    const mainContent = document.getElementById("mainContent");
     const themeToggle = document.getElementById("themeToggle");
     const discardBtn = document.getElementById("discardBtn");
     const html = document.documentElement;
 
-    // Collapse sidebar
     toggleBtn.addEventListener("click", () => {
       sidebar.classList.toggle("w-64");
       sidebar.classList.toggle("w-20");
+      sidebar.classList.toggle("collapsed");
+      mainContent.classList.toggle("ml-64");
+      mainContent.classList.toggle("ml-20");
       document.querySelectorAll(".nav-text, #brandTitle").forEach(el => {
         el.classList.toggle("hidden");
       });
     });
 
-    // Toggle theme
     themeToggle.addEventListener("click", () => {
       html.classList.toggle("dark");
       localStorage.setItem("theme", html.classList.contains("dark") ? "dark" : "light");
@@ -201,7 +207,6 @@
       html.classList.add("dark");
     }
 
-    // Confirm discard
     discardBtn.addEventListener("click", () => {
       if (confirm("Are you sure you want to discard this project?")) {
         window.location.href = "{% url 'dashboard' %}";

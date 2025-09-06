@@ -26,6 +26,15 @@ def project_detail(request, pk):
     project = get_object_or_404(Project, pk=pk)
     return render(request, "project_detail.html", {"project": project})
 
+def edit_project(request, pk):
+    project = get_object_or_404(Project, pk=pk)
+    # TODO: add a form for editing
+    return render(request, "edit_project.html", {"project": project})
+
+def delete_project(request, pk):
+    project = get_object_or_404(Project, pk=pk)
+    project.delete()
+    return redirect("dashboard")
 
 def taskview(request):
     """My Tasks Page (all tasks)"""
@@ -130,4 +139,40 @@ def save_task(request, project_id=None):
 
     messages.error(request, "❌ Invalid request")
     return redirect("task_inside_view", project_id=project.id)
+ 
+ # ------------------- PROFILE PAGE -------------------
+
+@login_required
+def profile_view(request):
+    user = request.user
+
+    if request.method == "POST":
+        name = request.POST.get("name")
+        email = request.POST.get("email")
+        bio = request.POST.get("bio")
+
+        user.first_name = name
+        user.email = email
+
+        if hasattr(user, "profile"):
+            user.profile.bio = bio
+            user.profile.save()
+
+        user.save()
+        messages.success(request, "✅ Profile updated successfully!")
+        return redirect("profile")
+
+    return render(request, "profilepage.html", {"user": user})
+
+
+@login_required
+def settings_view(request):
+    return render(request, "settings.html", {"user": request.user})
+
+
+@login_required
+def signout_view(request):
+    logout(request)
+    messages.success(request, "✅ Logged out successfully!")
+    return redirect("home")
 

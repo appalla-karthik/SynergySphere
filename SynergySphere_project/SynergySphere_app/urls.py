@@ -14,9 +14,16 @@ urlpatterns = [
     path("tasks/save/<int:project_id>/", views.save_task, name="save_task"),            # Save Task (needs project_id)
 
     # ---------------- PROJECTS ----------------
-    path("projects/new/", views.new_project, name="new_project"),                       # Project create form
+    path("projectsnew/", views.new_project, name="new_project"),                       # Project create form
     path("projects/save/", views.save_project, name="save_project"),                    # Save Project
     # extra create_project path hata sakte ho (duplicate hai), ya redirect kar do
-    # path("create_project/", views.save_project, name="create_project"),               
+    # path("create_project/", views.save_project, name="create_project"), 
+    path('projects/<int:pk>/edit/', views.edit_project, name='edit_project'),
+    path('projects/<int:pk>/delete/', views.delete_project, name='delete_project'),    
+
+     # ---------------- USER PROFILE & SETTINGS ----------------
+    path("profile/", views.profile_view, name="profile"),       # User Profile
+    path("settings/", views.settings_view, name="settings"),    # Settings Page
+    path("signout/", views.signout_view, name="signout"),          
 
 ]

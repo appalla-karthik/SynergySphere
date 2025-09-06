@@ -8,6 +8,10 @@ from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
 from django.utils.html import strip_tags
 import random
+from datetime import timedelta
+from django.utils import timezone
+
+
 
 User = get_user_model()
 
@@ -128,3 +132,80 @@ def logout_view(request):
     logout(request)
     messages.success(request, "✅ Logged out successfully", extra_tags="auth")
     return redirect("login")
+
+def forgot_password(request):
+    if request.method == "POST":
+        email = request.POST.get("email")
+        try:
+            user = User.objects.get(email=email)
+            
+            # Generate OTP
+            otp = str(random.randint(100000, 999999))
+            user.otp = otp
+            user.otp_created_at = timezone.now()  # Track OTP creation time
+            user.save()
+            
+            # Send OTP via email
+            subject = "SynergySphere Password Reset OTP"
+            from_email = settings.DEFAULT_FROM_EMAIL
+            to_email = [email]
+
+            html_content = render_to_string("emails/reset_otp_email.html", {"username": user.username, "otp": otp})
+            text_content = strip_tags(html_content)
+
+            email_message = EmailMultiAlternatives(subject, text_content, from_email, to_email)
+            email_message.attach_alternative(html_content, "text/html")
+            email_message.send()
+
+            messages.success(request, "✅ OTP sent to your email!")
+            return redirect("reset_password", email=email)
+
+        except User.DoesNotExist:
+            messages.error(request, "❌ Email not found!")
+    return render(request, "auth/forgot-password.html")
+
+
+# -------------------- RESET PASSWORD --------------------
+def reset_password(request, email):
+    try:
+        user = User.objects.get(email=email)
+    except User.DoesNotExist:
+        messages.error(request, "⚠️ User not found!")
+        return redirect("forgot_password")
+
+    if request.method == "POST":
+        otp_input = request.POST.get("otp")
+        password1 = request.POST.get("password1")
+        password2 = request.POST.get("password2")
+
+        # Check OTP
+        if otp_input != user.otp:
+            messages.error(request, "❌ Invalid OTP!")
+            return redirect("reset_password", email=email)
+
+        # Check OTP expiry (10 minutes)
+        if user.otp_created_at and timezone.now() > user.otp_created_at + timedelta(minutes=10):
+            messages.error(request, "❌ OTP expired! Please request a new one.")
+            return redirect("forgot_password")
+
+        # Check passwords match
+        if password1 != password2:
+            messages.error(request, "❌ Passwords do not match!")
+            return redirect("reset_password", email=email)
+
+        # Set new password
+        try:
+            validate_password(password1)
+        except ValidationError as e:
+            messages.error(request, f"⚠️ Weak Password: {' '.join(e.messages)}")
+            return redirect("reset_password", email=email)
+
+        user.set_password(password1)
+        user.otp = None
+        user.otp_created_at = None
+        user.save()
+
+        messages.success(request, "✅ Password reset successful! You can now login.")
+        return redirect("login")
+
+    return render(request, "auth/reset_password.html", {"email": email})
