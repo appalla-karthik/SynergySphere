@@ -32,7 +32,7 @@ class TaskAdmin(admin.ModelAdmin):
     search_fields = ("name", "assignee", "tags")
     list_filter = ("status", "deadline")
     ordering = ("-created_at",)
-    autocomplete_fields = ("project",)  # ✅ dropdown instead of typing project id
+    autocomplete_fields = ("project",)  
 
 
 @admin.register(Profile)

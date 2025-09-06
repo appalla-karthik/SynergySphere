@@ -1,5 +1,4 @@
 {% load static %}
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -186,45 +185,38 @@ body.light input, body.light textarea {
 <body class="bg-[#0f0f23] text-[#f5f5f7] text-sm transition-smooth dark">
   <!-- Sidebar -->
   <aside id="sidebar" class="sidebar fixed left-0 top-0 h-screen w-60 bg-black/95 backdrop-blur-2xl border-r border-gray-900/60 p-5 flex flex-col justify-between transition-smooth z-20">
-  <div>
-    <div class="flex items-center justify-between mb-7">
-      <span class="text-lg font-semibold title-text">SynergySphere</span>
-      <button id="collapseToggle" class="text-gray-500 hover:text-white transition-smooth">
-        <i data-lucide="panel-left-close" class="icon"></i>
-      </button>
-    </div>
-    <nav class="flex flex-col space-y-3">
-      <a href="{% url 'home' %}" class="flex items-center space-x-2.5 text-gray-400 hover:text-white transition-smooth">
-        <i data-lucide="home" class="icon"></i><span>Home</span>
-      </a>
-    </nav>
-  </div>
-
-  <!-- ✅ User Info -->
-  <div class="flex flex-col space-y-3">
-    <!-- Theme Toggle -->
-    <button id="themeToggle" class="w-9 h-9 flex items-center justify-center bg-white/5 rounded-full text-gray-500 hover:bg-white/10 transition-smooth">
-      <i data-lucide="sun" class="icon"></i>
-    </button>
-
-    <!-- ✅ Dynamic Profile Image -->
-    <div class="flex items-center space-x-2.5 text-gray-400">
-      <div class="w-8 h-8 rounded-full overflow-hidden border border-gray-700">
-        <img src="{% if request.user.is_authenticated and request.user.profile.image %}{{ request.user.profile.image.url }}{% else %}{% static 'images/avatar.png' %}{% endif %}"
-             alt="User Avatar"
-             class="w-full h-full object-cover">
+    <div>
+      <div class="flex items-center justify-between mb-7">
+        <span class="text-lg font-semibold title-text">SynergySphere</span>
+        <button id="collapseToggle" class="text-gray-500 hover:text-white transition-smooth">
+          <i data-lucide="panel-left-close" class="icon"></i>
+        </button>
       </div>
-      <span class="user-name text-xs font-medium">
-        {% if request.user.is_authenticated %}
-          {{ request.user.username }}
-        {% else %}
-          Guest
-        {% endif %}
-      </span>
+      <nav class="flex flex-col space-y-3">
+        <a href="{% url 'home' %}" class="flex items-center space-x-2.5 text-gray-400 hover:text-white transition-smooth">
+          <i data-lucide="home" class="icon"></i><span>Home</span>
+        </a>
+      </nav>
     </div>
-  </div>
-</aside>
+    <div class="flex flex-col space-y-3">
+      <button id="themeToggle" class="w-9 h-9 flex items-center justify-center bg-white/5 rounded-full text-gray-500 hover:bg-white/10 transition-smooth">
+        <i data-lucide="sun" class="icon"></i>
+      </button>
+      <div class="flex items-center space-x-2.5 text-gray-400">
+        <div class="w-7 h-7 bg-gradient-to-r from-blue-400 to-purple-500 rounded-full flex items-center justify-center">
+          <span class="text-xs text-white font-medium">U</span>
+        </div>
+        <span class="user-name text-xs font-medium">
+          {% if request.user.is_authenticated %}
+            {{ request.user.username }}
+          {% else %}
+            Guest
+          {% endif %}
+        </span>
 
+      </div>
+    </div>
+  </aside>
 
   <!-- Main Content -->
   <main class="ml-60 p-7 transition-smooth min-h-screen" id="mainContent">
@@ -287,20 +279,15 @@ body.light input, body.light textarea {
       onclick="showProjectDetail({{ project.id|default:0 }})">
 
   <!-- Tags -->
- <!-- Tags -->
-<div class="flex flex-wrap gap-2 mb-2">
-  {% if project.tags %}
-    {% for tag in project.tags|split:"," %}
+  <div class="flex flex-wrap gap-2 mb-2">
+    {% for tag in project.tags.all %}
       <span class="px-2 py-0.5 rounded-full text-xs font-medium 
                   bg-gradient-to-r from-gray-700/40 to-gray-800/40 
                   border border-gray-600/40 text-gray-300">
-        {{ tag|trim }}
+        {{ tag.name }}
       </span>
     {% endfor %}
-  {% else %}
-    <span class="text-gray-500 text-xs">No Tags</span>
-  {% endif %}
-</div>
+  </div>
 
   <!-- Project Title -->
   <h3 class="font-semibold text-sm mb-3 group-hover:text-blue-400 transition-colors">
@@ -335,19 +322,16 @@ body.light input, body.light textarea {
       <span class="text-xs text-gray-400">{{ project.manager.username }}</span>
     </div>
 
-    <!-- Deadline -->
     {% if project.deadline %}
       <span class="text-xs px-2 py-0.5 rounded-full bg-red-500/20 text-red-400 border border-red-500/30">
         D-{{ project.days_left }}
       </span>
     {% endif %}
 
-    <!-- Tasks -->
     <span class="px-2 py-0.5 text-xs rounded-full bg-gray-700/40 text-gray-300 border border-gray-600/40">
       {{ project.task_set.count }} Tasks
     </span>
 
-    <!-- Context Menu -->
     <div class="relative">
       <button class="text-gray-400 hover:text-white" onclick="openProjectMenu(event, {{ project.id }})">
         <i data-lucide="more-vertical" class="w-4 h-4"></i>
@@ -363,29 +347,21 @@ body.light input, body.light textarea {
           {% endfor %}
         </div>
 
-        <!-- List View -->
         <div id="list-container" class="hidden divide-y divide-gray-800">
           {% for project in projects %}
             <div class="flex items-center justify-between py-4 px-3 rounded-lg cursor-pointer hover:bg-white/5 transition-all"
                  onclick="showProjectDetail({{ project.id|default:0 }})">
 
-              <!-- Left Section -->
               <div class="flex items-center space-x-4">
-                <!-- Title & Tags -->
                 <div>
                   <h3 class="font-semibold text-sm mb-1 group-hover:text-blue-400 transition-colors">
                     {{ project.name|default:'Untitled Project' }}
                   </h3>
                   <div class="flex flex-wrap gap-2">
-                    {% for tag in project.tags.all %}
-                      <span class="px-2 py-0.5 rounded-full text-xs font-medium border backdrop-blur-sm
-                        {% cycle 'bg-pink-500/20 text-pink-300 border-pink-400/30' 
-                                 'bg-blue-500/20 text-blue-300 border-blue-400/30' 
-                                 'bg-green-500/20 text-green-300 border-green-400/30' 
-                                 'bg-purple-500/20 text-purple-300 border-purple-400/30' %}">
-                        {{ tag.name }}
-                      </span>
-                    {% endfor %}
+                    {% for tag in project.tags_list %}
+  <span>{{ tag }}</span>
+{% endfor %}
+
                   </div>
                 </div>
               </div>
