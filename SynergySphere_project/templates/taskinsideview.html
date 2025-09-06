@@ -104,18 +104,64 @@
     </div>
 
     <div id="taskContainer" class="grid grid-cols-1 md:grid-cols-3 gap-8">
-      {% for task in tasks %}
-        <div class="p-5 rounded-xl shadow-md bg-white dark:bg-neutral-900 border border-gray-200 dark:border-gray-700 fade-in">
-          <h3 class="font-semibold text-lg">{{ task.name }}</h3>
-          <p class="text-sm text-gray-500 dark:text-gray-400 mb-3">{{ task.description|default:"No description" }}</p>
-          <p class="text-xs text-gray-400">Assignee: <span class="font-medium text-gray-800 dark:text-white">{{ task.assignee }}</span></p>
-          <p class="text-xs text-gray-400">Status: <span class="font-medium text-blue-500">{{ task.status }}</span></p>
-          <p class="text-xs text-gray-400">Deadline: {{ task.deadline|date:"M d, Y" }}</p>
-        </div>
-      {% empty %}
-        <p class="text-gray-400">No tasks found. Click <b>+ New Task</b> to add one.</p>
-      {% endfor %}
+  {% for task in tasks %}
+    <div class="p-5 rounded-2xl shadow-md bg-white dark:bg-neutral-900 border border-gray-200 dark:border-gray-700 fade-in hover:scale-[1.02] transition">
+      
+      <!-- Labels -->
+      <div class="flex gap-2 mb-3">
+        {% if task.label %}
+          <span class="px-2 py-1 text-xs rounded-lg bg-green-100 text-green-700 font-medium">
+            {{ task.label }}
+          </span>
+        {% endif %}
+        {% if task.type %}
+          <span class="px-2 py-1 text-xs rounded-lg bg-red-100 text-red-700 font-medium">
+            {{ task.type }}
+          </span>
+        {% endif %}
+      </div>
+
+      <!-- Title -->
+      <h3 class="font-semibold text-lg mb-2">{{ task.name }}</h3>
+
+      <!-- Thumbnails -->
+      <div class="flex gap-2 mb-3">
+        {% if task.thumbnail1 %}
+          <img src="{{ task.thumbnail1.url }}" class="w-14 h-14 rounded-lg object-cover">
+        {% endif %}
+        {% if task.thumbnail2 %}
+          <img src="{{ task.thumbnail2.url }}" class="w-14 h-14 rounded-lg object-cover">
+        {% endif %}
+        {% if task.thumbnail3 %}
+          <img src="{{ task.thumbnail3.url }}" class="w-14 h-14 rounded-lg object-cover">
+        {% endif %}
+      </div>
+
+      <!-- Footer (deadline + assignee avatar) -->
+      <div class="flex justify-between items-center text-sm text-gray-500 dark:text-gray-400">
+        <p>
+          {% if task.deadline %}
+            {{ task.deadline|date:"d/m/y" }}
+          {% else %}
+            No deadline
+          {% endif %}
+        </p>
+        {% if task.assignee.profile.image %}
+          <img src="{{ task.assignee.profile.image.url }}" 
+               alt="{{ task.assignee.username }}"
+               class="w-8 h-8 rounded-full border border-gray-300 dark:border-gray-700">
+        {% else %}
+          <img src="{% static 'images/avatar.png' %}" 
+               alt="user"
+               class="w-8 h-8 rounded-full border border-gray-300 dark:border-gray-700">
+        {% endif %}
+      </div>
     </div>
+  {% empty %}
+    <p class="text-gray-400">No tasks found. Click <b>+ New Task</b> to add one.</p>
+  {% endfor %}
+</div>
+
   </main>
 
   <div id="addPeopleModal" class="fixed inset-0 hidden items-center justify-center bg-black bg-opacity-50 z-50">

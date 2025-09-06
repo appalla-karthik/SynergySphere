@@ -23,12 +23,14 @@ def dashboard(request):
         project.tag_list = [tag.strip() for tag in project.tags.split(",") if tag.strip()]
 
     return render(request, "project_view.html", {"projects": projects})
-
+@login_required
 def project_detail(request, pk):
-    """Single project detail view"""
     project = get_object_or_404(Project, pk=pk)
-    return render(request, "project_detail.html", {"project": project})
-
+    members = project.members.all()
+    return render(request, "project_detail.html", {
+        "project": project,
+        "members": members,
+    })
 def edit_project(request, pk):
     project = get_object_or_404(Project, pk=pk)
     # TODO: add a form for editing
