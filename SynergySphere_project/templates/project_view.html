@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ProjectPro – Projects</title>
+  <title>SynergySphere - Projects</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=SF+Pro+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
   <script src="https://unpkg.com/lucide@latest"></script>
@@ -131,6 +131,51 @@
       .text-sm { font-size: 11px; }
       .text-xs { font-size: 10px; }
     }
+
+
+    /* Global background */
+body.dark { 
+  background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 100%);
+  color: #f5f5f7;
+}
+body.light { 
+  background: #f3f4f6; /* softer grey background */
+  color: #1f2937;
+}
+
+/* Sidebar */
+body.dark .sidebar {
+  background: rgba(0,0,0,0.95);
+  border-right: 1px solid rgba(255,255,255,0.1);
+}
+body.light .sidebar {
+  background: #ffffff;
+  border-right: 1px solid #d1d5db;
+  color: #111827;
+}
+
+/* Glass effect cards */
+body.dark .glass {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+body.light .glass {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+}
+
+/* Inputs */
+body.dark input, body.dark textarea {
+  background: #1f2937;
+  border: 1px solid #374151;
+  color: #f5f5f7;
+}
+body.light input, body.light textarea {
+  background: #ffffff;
+  border: 1px solid #d1d5db;
+  color: #111827;
+}
+
   </style>
 </head>
 <body class="bg-[#0f0f23] text-[#f5f5f7] text-sm transition-smooth dark">
@@ -138,7 +183,7 @@
   <aside id="sidebar" class="sidebar fixed left-0 top-0 h-screen w-60 bg-black/95 backdrop-blur-2xl border-r border-gray-900/60 p-5 flex flex-col justify-between transition-smooth z-20">
     <div>
       <div class="flex items-center justify-between mb-7">
-        <span class="text-lg font-semibold title-text">ProjectPro</span>
+        <span class="text-lg font-semibold title-text">SynergySphere</span>
         <button id="collapseToggle" class="text-gray-500 hover:text-white transition-smooth">
           <i data-lucide="panel-left-close" class="icon"></i>
         </button>
@@ -486,15 +531,17 @@
 
     // Removed Modal functionality
 
-    // Project detail function with robustness
+      // Project detail function with robustness
     window.showProjectDetail = function(projectId) {
       if (projectId && projectId > 0) {
-        window.location.href = `/project/${projectId}`;
+        // 👇 ab ye tasks view ke liye redirect karega
+        window.location.href = `/tasks/${projectId}/`;
       }
     };
 
     // Initialize Lucide icons
     lucide.createIcons();
+
   </script>
 </body>
 </html>

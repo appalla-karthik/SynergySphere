@@ -35,13 +35,13 @@
 
       <!-- Navigation -->
       <nav class="space-y-4">
-        <a href="#" class="flex items-center gap-2 px-4 py-2 rounded-xl hover:bg-blue-100 dark:hover:bg-blue-900 hover:scale-105 transition">
+        <a href="{% url 'dashboard' %}" class="flex items-center gap-2 px-4 py-2 rounded-xl hover:bg-blue-100 dark:hover:bg-blue-900 hover:scale-105 transition">
           <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7h18M3 12h18M3 17h18"/>
           </svg>
           <span class="font-medium nav-text">Projects</span>
         </a>
-        <a href="#" class="flex items-center gap-2 px-4 py-2 rounded-xl hover:bg-green-100 dark:hover:bg-green-900 hover:scale-105 transition">
+        <a href="{% url 'taskview' %}" class="flex items-center gap-2 px-4 py-2 rounded-xl hover:bg-green-100 dark:hover:bg-green-900 hover:scale-105 transition">
           <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
           </svg>
@@ -78,21 +78,35 @@
   <main class="flex-1 p-8">
     <!-- ✅ Top Bar -->
     <div class="flex justify-between items-center mb-10">
-      <p class="text-sm text-gray-500 dark:text-gray-400">Projects > <span class="font-medium text-gray-900 dark:text-white">RD Sales</span></p>
+      <p class="text-sm text-gray-500 dark:text-gray-400">Projects > <span class="font-medium text-gray-900 dark:text-white">{{ project.name }}</span></p>
       <div class="flex items-center gap-4">
         <input type="text" placeholder="Search..."
           class="px-4 py-2 rounded-xl bg-gray-200 dark:bg-neutral-800 text-black dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
-        <button id="newTaskBtn" class="px-5 py-2 bg-blue-500 text-white font-medium rounded-xl hover:bg-blue-600 hover:scale-105 shadow-md transition">
+        <!-- ✅ New Task button opens newtask.html -->
+        <a href="{% url 'new_task' project.id %}" 
+           class="px-5 py-2 bg-blue-500 text-white font-medium rounded-xl hover:bg-blue-600 hover:scale-105 shadow-md transition">
           + New Task
-        </button>
+        </a>
       </div>
     </div>
 
     <!-- ✅ Task Cards -->
-    <div id="taskContainer" class="grid grid-cols-1 md:grid-cols-3 gap-8"></div>
+    <div id="taskContainer" class="grid grid-cols-1 md:grid-cols-3 gap-8">
+      {% for task in tasks %}
+        <div class="p-5 rounded-xl shadow-md bg-white dark:bg-neutral-900 border border-gray-200 dark:border-gray-700 fade-in">
+          <h3 class="font-semibold text-lg">{{ task.name }}</h3>
+          <p class="text-sm text-gray-500 dark:text-gray-400 mb-3">{{ task.description|default:"No description" }}</p>
+          <p class="text-xs text-gray-400">Assignee: <span class="font-medium text-gray-800 dark:text-white">{{ task.assignee }}</span></p>
+          <p class="text-xs text-gray-400">Status: <span class="font-medium text-blue-500">{{ task.status }}</span></p>
+          <p class="text-xs text-gray-400">Deadline: {{ task.deadline|date:"M d, Y" }}</p>
+        </div>
+      {% empty %}
+        <p class="text-gray-400">No tasks found. Click <b>+ New Task</b> to add one.</p>
+      {% endfor %}
+    </div>
   </main>
 
-  <!-- JS (same as pehle) -->
+  <!-- JS -->
   <script>
     const toggleBtn = document.getElementById("toggleBtn");
     const sidebar = document.getElementById("sidebar");
