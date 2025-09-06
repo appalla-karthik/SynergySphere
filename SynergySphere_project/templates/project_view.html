@@ -194,6 +194,67 @@ body.light input, body.light textarea {
   border-color: rgba(255, 255, 255, 0.25);
   box-shadow: 0 10px 25px rgba(0,0,0,0.25);
 }
+.project-card {
+  position: relative;
+  padding: 1rem;
+  border-radius: 1rem;
+  background: rgba(255, 255, 255, 0.04);
+  backdrop-filter: blur(14px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  transition: all 0.35s ease;
+  overflow: hidden;
+}
+
+/* Gradient border on hover */
+.project-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(135deg, #6366f1, #a855f7, #ec4899);
+  -webkit-mask: 
+    linear-gradient(#fff 0 0) content-box, 
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+          mask-composite: exclude;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+.project-card:hover::before {
+  opacity: 1;
+}
+
+/* Lift + glow */
+.project-card:hover {
+  transform: translateY(-10px) scale(1.03);
+  box-shadow: 0 12px 30px rgba(99, 102, 241, 0.25), 
+              0 0 15px rgba(168, 85, 247, 0.2);
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
+/* Project name hover effect */
+.project-card h2 {
+  transition: color 0.3s ease;
+}
+.project-card:hover h2 {
+  color: #a78bfa; /* purple-400 */
+}
+
+/* Task progress bar */
+.progress-container {
+  height: 6px;
+  background: rgba(255,255,255,0.1);
+  border-radius: 9999px;
+  overflow: hidden;
+  margin-top: 0.75rem;
+}
+.progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+  width: 0%;
+  transition: width 0.5s ease;
+}
 
 
   </style>
@@ -311,39 +372,32 @@ body.light input, body.light textarea {
   {% for project in projects %}
     <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-4 hover:shadow-2xl transition">
       <!-- Project Image -->
-    <div class="project-card glass cursor-pointer relative group"
-     onclick="showProjectDetail({{ project.id }})">
-
+<div class="project-card cursor-pointer group" onclick="showProjectDetail({{ project.id }})">
   <!-- Project Image -->
   {% if project.image %}
     <div class="relative w-full h-40 overflow-hidden rounded-lg mb-3">
-      <img src="{{ project.image.url }}" 
-           alt="{{ project.name }}" 
+      <img src="{{ project.image.url }}" alt="{{ project.name }}"
            class="w-full h-full object-cover transform group-hover:scale-110 transition duration-500 ease-in-out">
-      <!-- Overlay -->
-      <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition">
-        <span class="text-white text-xs bg-purple-600/80 px-3 py-1 rounded-full shadow-md">
-          View Details →
-        </span>
+      <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition flex items-end p-3">
+        <span class="text-white text-xs bg-purple-600/80 px-3 py-1 rounded-full shadow-md">View Details →</span>
       </div>
     </div>
   {% endif %}
 
   <!-- Project Info -->
-  <h2 class="text-lg font-bold text-gray-900 dark:text-white group-hover:text-purple-400 transition">
-    {{ project.name }}
-  </h2>
+  <h2 class="text-lg font-bold text-gray-900 dark:text-white">{{ project.name }}</h2>
   <p class="text-sm text-gray-500 dark:text-gray-400">👨‍💼 {{ project.manager }}</p>
 
   {% if project.deadline %}
     <p class="text-xs text-gray-400 mt-1">⏳ {{ project.deadline }}</p>
   {% endif %}
 
+  <!-- Badges -->
   <div class="flex justify-between items-center mt-3">
     <span class="px-2 py-1 text-xs rounded-full bg-gradient-to-r from-blue-500 to-purple-500 text-white shadow">
       {{ project.priority }}
     </span>
-    <span class="px-2 py-1 text-xs rounded-full 
+    <span class="px-2 py-1 text-xs rounded-full
                  {% if project.status == 'active' %} bg-green-500/20 text-green-400 
                  {% elif project.status == 'completed' %} bg-blue-500/20 text-blue-400 
                  {% else %} bg-yellow-500/20 text-yellow-400 {% endif %}">
@@ -359,12 +413,16 @@ body.light input, body.light textarea {
       </span>
     {% endfor %}
   </div>
+
+  <!-- Progress (optional) -->
+  <div class="progress-container">
+    <div class="progress-bar" style="width: {{ project.completion|default:'40' }}%;"></div>
+  </div>
 </div>
 
 
-
      
-      <
+      
       
     </div>
   {% empty %}
