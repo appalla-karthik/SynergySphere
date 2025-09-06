@@ -1,99 +1,122 @@
 {% load static %}
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="dark">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>SynergySphere - Project Detail</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = { darkMode: 'class' }
+  </script>
   <style>
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    .fade-in { animation: fadeIn 0.5s ease-in-out; }
+    @keyframes fadeIn { from { opacity:0; transform:translateY(10px);} to {opacity:1; transform:translateY(0);} }
   </style>
 </head>
-<body class="bg-gray-100 text-gray-900 min-h-screen flex">
+<body class="bg-gray-100 dark:bg-black text-gray-900 dark:text-white min-h-screen flex transition-colors duration-500">
 
   <!-- Sidebar -->
-  <aside id="sidebar" class="w-64 bg-white shadow-xl border-r border-gray-200 flex flex-col justify-between p-4 transition-transform duration-300">
+  <aside id="sidebar" class="w-64 bg-white dark:bg-neutral-900 shadow-xl border-r border-gray-200 dark:border-gray-800 flex flex-col justify-between p-4 transition-all duration-500 ease-in-out">
     <div>
-      <h1 class="text-xl font-bold mb-6 text-gray-800">SynergySphere</h1>
-      <nav class="space-y-3">
-        <a href="#" class="block px-3 py-2 rounded-lg hover:bg-gray-200">📁 Projects</a>
-        <a href="#" class="block px-3 py-2 rounded-lg hover:bg-gray-200">✅ My Tasks</a>
+      <!-- Collapse/Expand Button -->
+      <button id="toggleBtn" class="flex items-center gap-3 mb-6 px-3 py-2 rounded-lg bg-gray-100 dark:bg-neutral-800 hover:bg-gray-200 dark:hover:bg-neutral-700 hover:scale-105 transition">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-gray-700 dark:text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+        </svg>
+        <span class="font-medium nav-text">Collapse</span>
+      </button>
+
+      <!-- Brand -->
+      <h1 id="brandTitle" class="text-2xl font-bold mb-8 text-gray-800 dark:text-white tracking-tight bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent">
+        SynergySphere
+      </h1>
+
+      <!-- Navigation -->
+      <nav class="space-y-4">
+        <a href="#" class="flex items-center gap-2 px-4 py-2 rounded-xl hover:bg-blue-100 dark:hover:bg-blue-900 hover:scale-105 transition">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7h18M3 12h18M3 17h18"/>
+          </svg>
+          <span class="font-medium nav-text">Projects</span>
+        </a>
+        <a href="#" class="flex items-center gap-2 px-4 py-2 rounded-xl hover:bg-green-100 dark:hover:bg-green-900 hover:scale-105 transition">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+          </svg>
+          <span class="font-medium nav-text">My Tasks</span>
+        </a>
       </nav>
     </div>
-    <div class="flex items-center gap-2">
-      <img src="{% static 'images/avatar.png' %}" alt="user" class="w-10 h-10 rounded-full">
-      <div>
-        <p class="font-semibold">Test User</p>
-        <p class="text-gray-500 text-sm">user@mail</p>
+
+    <!-- User + Dark Mode Toggle -->
+    <div class="space-y-4">
+      <!-- Dark Mode -->
+      <button id="themeToggle" class="flex items-center gap-3 px-4 py-2 rounded-xl bg-gray-200 dark:bg-neutral-700 text-gray-800 dark:text-gray-200 hover:bg-purple-100 dark:hover:bg-purple-900 hover:scale-105 transition">
+        <svg id="moonIcon" xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 dark:hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12.79A9 9 0 0111.21 3a7 7 0 000 14A9 9 0 0121 12.79z" />
+        </svg>
+        <svg id="sunIcon" xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 hidden dark:inline" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v2m0 14v2m9-9h-2M5 12H3m15.364 6.364l-1.414-1.414M7.05 7.05L5.636 5.636m12.728 0l-1.414 1.414M7.05 16.95l-1.414 1.414" />
+        </svg>
+        <span class="text-sm nav-text">Toggle Theme</span>
+      </button>
+
+      <!-- User -->
+      <div class="flex items-center gap-3 p-3 bg-gray-100 dark:bg-neutral-800 rounded-xl shadow hover:bg-pink-100 dark:hover:bg-pink-900 hover:scale-105 transition">
+        <img src="{% static 'images/avatar.png' %}" alt="user" class="w-10 h-10 rounded-full border border-gray-300 dark:border-gray-700">
+        <div class="nav-text">
+          <p class="font-semibold">Test User</p>
+          <p class="text-gray-500 dark:text-gray-400 text-sm">user@mail</p>
+        </div>
       </div>
     </div>
   </aside>
 
   <!-- Main Content -->
-  <main class="flex-1 p-6">
-    <!-- Top Bar -->
-    <div class="flex justify-between items-center mb-6">
-      <div class="flex items-center gap-3">
-        <!-- Sidebar Toggle Button -->
-        <button id="toggleBtn" class="p-2 rounded-lg bg-gray-200 hover:bg-gray-300">
-          ☰
-        </button>
-        <p class="text-sm text-gray-500">Projects > RD Sales</p>
-      </div>
+  <main class="flex-1 p-8">
+    <!-- ✅ Top Bar -->
+    <div class="flex justify-between items-center mb-10">
+      <p class="text-sm text-gray-500 dark:text-gray-400">Projects > <span class="font-medium text-gray-900 dark:text-white">RD Sales</span></p>
       <div class="flex items-center gap-4">
         <input type="text" placeholder="Search..."
-          class="px-3 py-2 rounded-lg bg-gray-200 text-gray-900 focus:outline-none">
-        <button class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 shadow-md">+ New Task</button>
+          class="px-4 py-2 rounded-xl bg-gray-200 dark:bg-neutral-800 text-black dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
+        <button id="newTaskBtn" class="px-5 py-2 bg-blue-500 text-white font-medium rounded-xl hover:bg-blue-600 hover:scale-105 shadow-md transition">
+          + New Task
+        </button>
       </div>
     </div>
 
-    <!-- Task Cards -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-      <!-- Card -->
-      <div class="bg-white rounded-2xl shadow-lg p-4 hover:shadow-xl transition">
-        <div class="flex justify-between items-center mb-2">
-          <span class="text-xs bg-green-100 text-green-700 px-2 py-1 rounded">Feedback</span>
-          <span class="text-xs bg-red-100 text-red-700 px-2 py-1 rounded">Priority</span>
-        </div>
-        <img src="{% static 'images/sample1.png' %}" alt="task img" class="rounded-xl mb-3">
-        <h3 class="text-lg font-semibold">Optimize Website Controllers</h3>
-        <p class="text-sm text-gray-500">Due: 21/03/22</p>
-      </div>
-
-      <!-- Card -->
-      <div class="bg-white rounded-2xl shadow-lg p-4 hover:shadow-xl transition">
-        <div class="flex justify-between items-center mb-2">
-          <span class="text-xs bg-green-100 text-green-700 px-2 py-1 rounded">Feedback</span>
-          <span class="text-xs bg-yellow-100 text-yellow-700 px-2 py-1 rounded">Dev</span>
-        </div>
-        <img src="{% static 'images/sample2.png' %}" alt="task img" class="rounded-xl mb-3">
-        <h3 class="text-lg font-semibold">Remove Sales App</h3>
-        <p class="text-sm text-gray-500">Due: 21/03/22</p>
-      </div>
-
-      <!-- Card -->
-      <div class="bg-white rounded-2xl shadow-lg p-4 hover:shadow-xl transition">
-        <div class="flex justify-between items-center mb-2">
-          <span class="text-xs bg-purple-100 text-purple-700 px-2 py-1 rounded">Bit Brains</span>
-        </div>
-        <img src="{% static 'images/sample3.png' %}" alt="task img" class="rounded-xl mb-3">
-        <h3 class="text-lg font-semibold">Stripe Integration</h3>
-        <p class="text-sm text-gray-500">Due: 21/03/22</p>
-      </div>
-    </div>
+    <!-- ✅ Task Cards -->
+    <div id="taskContainer" class="grid grid-cols-1 md:grid-cols-3 gap-8"></div>
   </main>
 
-  <!-- JS for Sidebar Toggle -->
+  <!-- JS (same as pehle) -->
   <script>
     const toggleBtn = document.getElementById("toggleBtn");
     const sidebar = document.getElementById("sidebar");
+    const themeToggle = document.getElementById("themeToggle");
+    const html = document.documentElement;
 
+    // Sidebar collapse
     toggleBtn.addEventListener("click", () => {
-      sidebar.classList.toggle("-translate-x-64");
+      sidebar.classList.toggle("w-64");
+      sidebar.classList.toggle("w-20");
+      document.querySelectorAll(".nav-text, #brandTitle").forEach(el => {
+        el.classList.toggle("hidden");
+      });
     });
+
+    // Dark mode toggle
+    themeToggle.addEventListener("click", () => {
+      html.classList.toggle("dark");
+      localStorage.setItem("theme", html.classList.contains("dark") ? "dark" : "light");
+    });
+
+    if (localStorage.getItem("theme") === "dark") {
+      html.classList.add("dark");
+    }
   </script>
 
 </body>

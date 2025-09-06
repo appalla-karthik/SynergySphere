@@ -28,8 +28,11 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+# settings.py
+AUTH_USER_MODEL = "accounts.CustomUser"
 
 # Application definition
+
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -132,3 +135,18 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+# settings.py
+
+# Email settings
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = "smtp.gmail.com"
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+
+# Replace with your Gmail credentials
+EMAIL_HOST_USER = "godanishubham30@gmail.com"
+EMAIL_HOST_PASSWORD = "zodm usky pzwx uded"   # not your Gmail password, use App Password
+
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
