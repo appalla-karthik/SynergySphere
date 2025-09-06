@@ -15,7 +15,6 @@ def home(request):
 
 # Project Dashboard Page (list of projects)
 def dashboard(request):
-    # 👇 yaha sahi template lagana tha
     return render(request, "project_view.html", {"projects": PROJECTS})
 
 
@@ -30,7 +29,7 @@ def project_detail(request, pk):
 
 # My Tasks Page
 def taskview(request):
-     return render(request, "mytaskview.html", {"projects": PROJECTS})
+    return render(request, "mytaskview.html", {"projects": PROJECTS})
 
 
 # Inside Project -> Task List View
@@ -92,13 +91,11 @@ def save_project(request):
 
 # ------------------- TASK CREATE -------------------
 
-# ------------------- TASK CREATE -------------------
-
 def new_task(request, project_id=None):
     project = next((p for p in PROJECTS if p["id"] == project_id), None)
     if not project:
         messages.error(request, "❌ Project not found")
-        return redirect("task_view")  # ✅ redirect to mytaskview
+        return redirect("taskview")  # ✅ fixed
 
     users = ["krutagya kaneria", "mihirpanara11", "rajveer", "alex"]
     tags = ["Bug", "Feature", "Testing", "Design"]
@@ -146,7 +143,7 @@ def save_task(request, project_id=None):
         TASK_COUNTER += 1
 
         messages.success(request, f"✅ Task '{name}' created in project '{project['name']}'")
-        return redirect("taskview")  # ✅ after saving, go to mytaskview
+        return redirect("taskview")  # ✅ redirect to taskview after save
 
     messages.error(request, "❌ Invalid request")
-    return redirect("taskview")  # ✅ fallback
+    return redirect("taskview")
