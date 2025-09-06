@@ -14,10 +14,13 @@ def home(request):
 
 @login_required
 def dashboard(request):
-    projects = Project.objects.filter(manager=request.user).order_by("-created_at")
+    # Sirf us user ke projects jisme wo manager hai ya member hai
+    projects = Project.objects.filter(members=request.user) | Project.objects.filter(manager=request.user.username)
+    projects = projects.distinct().order_by("-created_at")
 
+    # Tags ko list me convert kar dete hai (frontend ke liye easy)
     for project in projects:
-        project.tags_list = project.tags.split(",") if project.tags else []
+        project.tag_list = [tag.strip() for tag in project.tags.split(",") if tag.strip()]
 
     return render(request, "project_view.html", {"projects": projects})
 
