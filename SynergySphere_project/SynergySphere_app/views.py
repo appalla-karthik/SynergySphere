@@ -2,8 +2,10 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.utils.dateparse import parse_date
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth import update_session_auth_hash
+from django.contrib.auth.models import User
 from .models import Project, Task   # ✅ database models import
-
+from django.http import JsonResponse
 
 # ------------------- MAIN PAGES -------------------
 
@@ -12,9 +14,10 @@ def home(request):
     return render(request, "welcome.html")
 
 
+@login_required
 def dashboard(request):
-    """Project dashboard (all projects from DB)"""
-    projects = Project.objects.all().order_by("-created_at")
+    """Project dashboard → show only logged-in user’s projects"""
+    projects = Project.objects.filter(manager=request.user).order_by("-created_at")
     return render(request, "project_view.html", {
         "projects": projects,
         "user": request.user
@@ -26,15 +29,39 @@ def project_detail(request, pk):
     project = get_object_or_404(Project, pk=pk)
     return render(request, "project_detail.html", {"project": project})
 
+
 def edit_project(request, pk):
     project = get_object_or_404(Project, pk=pk)
     # TODO: add a form for editing
     return render(request, "edit_project.html", {"project": project})
 
+
+def add_people(request, project_id):
+    project = get_object_or_404(Project, id=project_id)
+    if request.method == "POST":
+        email = request.POST.get("email")
+        try:
+            user = User.objects.get(email=email)
+            project.members.add(user)
+            return JsonResponse({"success": True, "username": user.username})
+        except User.DoesNotExist:
+            return JsonResponse({"success": False, "error": "User not found"}, status=404)
+    return JsonResponse({"success": False, "error": "Invalid request"}, status=400)
+
+def search_users(request):
+    query = request.GET.get("q", "")
+    users = User.objects.filter(
+        Q(username__icontains=query) | Q(email__icontains=query)
+    ).values("username", "email")[:20]  # limit to 20 results
+
+    return JsonResponse(list(users), safe=False)
+
+
 def delete_project(request, pk):
     project = get_object_or_404(Project, pk=pk)
     project.delete()
     return redirect("dashboard")
+
 
 def taskview(request):
     """My Tasks Page (all tasks)"""
@@ -139,40 +166,96 @@ def save_task(request, project_id=None):
 
     messages.error(request, "❌ Invalid request")
     return redirect("task_inside_view", project_id=project.id)
- 
- # ------------------- PROFILE PAGE -------------------
+
+
+# ------------------- USER PROFILE -------------------
+
+@login_required
+def profile_view(request):
+    """Profile Page → Edit details + Reset password"""
+    user = request.user
+
+    if request.method == "POST":
+        # ✅ Save Profile
+        if "save_profile" in request.POST:
+            name = request.POST.get("name")
+            email = request.POST.get("email")
+            bio = request.POST.get("bio", "")
+
+            user.first_name = name
+            user.email = email
+
+            # Agar tumne Profile model banaya hai toh:
+            if hasattr(user, "profile"):
+                user.profile.bio = bio
+                user.profile.save()
+
+            user.save()
+            messages.success(request, "✅ Profile updated successfully!")
+            return redirect("profile")
+
+        # ✅ Reset Password
+        if "reset_password" in request.POST:
+            new_password = request.POST.get("new_password")
+            confirm_password = request.POST.get("confirm_password")
+
+            if new_password and confirm_password and new_password == confirm_password:
+                user.set_password(new_password)
+                user.save()
+                update_session_auth_hash(request, user)  # logout na ho
+                messages.success(request, "🔑 Password changed successfully!")
+                return redirect("profile")
+            else:
+                messages.error(request, "❌ Passwords do not match!")
+
+    return render(request, "profile.html", {"user": user})
 
 @login_required
 def profile_view(request):
     user = request.user
 
     if request.method == "POST":
-        name = request.POST.get("name")
-        email = request.POST.get("email")
-        bio = request.POST.get("bio")
+        if "save_profile" in request.POST:
+            user.username = request.POST.get("username")
+            user.email = request.POST.get("email")
+            bio = request.POST.get("bio")
 
-        user.first_name = name
-        user.email = email
-
-        if hasattr(user, "profile"):
+            # ✅ Profile bio update
             user.profile.bio = bio
+
+            # ✅ Profile image update
+            if "profile_pic" in request.FILES:
+                user.profile.image = request.FILES["profile_pic"]
+
+            user.save()
             user.profile.save()
 
-        user.save()
-        messages.success(request, "✅ Profile updated successfully!")
-        return redirect("profile")
+            messages.success(request, "✅ Profile updated successfully!")
+            return redirect("profile")
 
-    return render(request, "profilepage.html", {"user": user})
+        if "reset_password" in request.POST:
+            new_pass = request.POST.get("new_password")
+            confirm_pass = request.POST.get("confirm_password")
+            if new_pass and new_pass == confirm_pass:
+                user.set_password(new_pass)
+                user.save()
+                update_session_auth_hash(request, user)
+                messages.success(request, "🔑 Password changed successfully!")
+                return redirect("profile")
+            else:
+                messages.error(request, "❌ Passwords do not match!")
+
+    return render(request, "profile.html", {"user": user})
 
 
-@login_required
-def settings_view(request):
-    return render(request, "settings.html", {"user": request.user})
+# app_name/templatetags/custom_filters.py
+from django import template
 
+register = template.Library()
 
-@login_required
-def signout_view(request):
-    logout(request)
-    messages.success(request, "✅ Logged out successfully!")
-    return redirect("home")
-
+@register.filter
+def split(value, delimiter=","):
+    """Split string into list by delimiter."""
+    if value:
+        return [item.strip() for item in value.split(delimiter) if item.strip()]
+    return []

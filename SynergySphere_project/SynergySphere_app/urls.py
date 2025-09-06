@@ -20,10 +20,8 @@ urlpatterns = [
     # path("create_project/", views.save_project, name="create_project"), 
     path('projects/<int:pk>/edit/', views.edit_project, name='edit_project'),
     path('projects/<int:pk>/delete/', views.delete_project, name='delete_project'),    
+    path("project/<int:project_id>/add-people/", views.add_people, name="add_people"),
+    path("search-users/", views.search_users, name="search_users"),
 
-     # ---------------- USER PROFILE & SETTINGS ----------------
-    path("profile/", views.profile_view, name="profile"),       # User Profile
-    path("settings/", views.settings_view, name="settings"),    # Settings Page
-    path("signout/", views.signout_view, name="signout"),          
-
+    path("profile/", views.profile_view, name="profile"),
 ]

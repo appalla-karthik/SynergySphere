@@ -1,5 +1,6 @@
 from django.db import models
 from django.utils import timezone
+from django.conf import settings
 
 
 class Project(models.Model):
@@ -22,6 +23,10 @@ class Project(models.Model):
     priority = models.CharField(max_length=50, choices=PRIORITY_CHOICES, default="Medium")
     description = models.TextField(blank=True)
     image = models.ImageField(upload_to="projects/", null=True, blank=True)
+
+    members = models.ManyToManyField(
+        settings.AUTH_USER_MODEL, related_name="projects", blank=True
+    )
 
     status = models.CharField(max_length=50, choices=STATUS_CHOICES, default="active")
     progress = models.IntegerField(default=0)
@@ -53,3 +58,12 @@ class Task(models.Model):
 
     def __str__(self):
         return f"{self.name} ({self.project.name})"
+
+
+class Profile(models.Model):
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    bio = models.TextField(blank=True, null=True)
+    image = models.ImageField(upload_to="profile_pics/", default="default/avatar.png")
+
+    def __str__(self):
+        return self.user.username

@@ -1,0 +1,212 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Profile - SynergySphere</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>tailwind.config = { darkMode: 'class' }</script>
+</head>
+<body class="bg-gray-100 dark:bg-black text-gray-900 dark:text-white min-h-screen flex transition">
+
+  <!-- ✅ Sidebar -->
+  <!-- ✅ Sidebar -->
+<aside id="sidebar" class="fixed top-0 left-0 h-screen w-64 bg-white dark:bg-neutral-900 border-r border-gray-200 dark:border-gray-800 flex flex-col justify-between p-4 transition-all duration-500 ease-in-out">
+  <div>
+    <!-- Collapse Button -->
+    <button id="toggleBtn" class="flex items-center gap-3 mb-6 px-3 py-2 rounded-lg bg-gray-100 dark:bg-neutral-800 hover:bg-gray-200 dark:hover:bg-neutral-700 transition w-full">
+      ☰ <span class="font-medium nav-text">Collapse</span>
+    </button>
+
+    <!-- Brand -->
+    <h1 id="brandTitle" class="text-xl font-bold mb-8 text-gray-800 dark:text-white tracking-tight bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent">
+      SynergySphere
+    </h1>
+
+    <!-- Nav Links -->
+    <nav class="space-y-4">
+      <a href="{% url 'dashboard' %}" class="flex items-center gap-3 px-4 py-2 rounded-xl hover:bg-blue-100 dark:hover:bg-blue-900 transition">
+        📂 <span class="nav-text">Projects</span>
+      </a>
+      <a href="{% url 'taskview' %}" class="flex items-center gap-3 px-4 py-2 rounded-xl hover:bg-green-100 dark:hover:bg-green-900 transition">
+        ✅ <span class="nav-text">My Tasks</span>
+      </a>
+      <a href="{% url 'profile' %}" class="flex items-center gap-3 px-4 py-2 rounded-xl bg-blue-500 text-white shadow transition">
+        👤 <span class="nav-text">Profile</span>
+      </a>
+    </nav>
+  </div>
+
+  <!-- ✅ User Info + Theme Toggle -->
+  <div class="space-y-4">
+    <!-- Theme Toggle -->
+    <button id="themeToggle" class="flex items-center gap-3 px-4 py-2 rounded-xl bg-gray-200 dark:bg-neutral-700 hover:bg-gray-300 dark:hover:bg-neutral-600 w-full transition">
+      🌗 <span class="nav-text text-sm">Toggle Theme</span>
+    </button>
+
+    <!-- ✅ User Profile -->
+    <div class="flex items-center gap-3 p-3 bg-gray-100 dark:bg-neutral-800 rounded-xl shadow hover:bg-gray-200 dark:hover:bg-neutral-700 transition">
+      <img src="{% if user.profile.image %}{{ user.profile.image.url }}{% else %}{% static 'images/avatar.png' %}{% endif %}" 
+           alt="profile-pic" 
+           class="w-10 h-10 rounded-full object-cover border border-gray-300 dark:border-gray-700">
+      <div class="nav-text">
+        <p class="font-semibold">{{ user.username }}</p>
+        <p class="text-gray-500 text-sm dark:text-gray-400 truncate">{{ user.email }}</p>
+      </div>
+    </div>
+  </div>
+</aside>
+
+
+  <!-- ✅ Main -->
+  <main id="mainContent" class="flex-1 ml-64 flex items-center justify-center min-h-screen p-8 transition-all duration-500">
+
+    <!-- Profile Form -->
+    <form method="POST" id="profileForm" enctype="multipart/form-data" 
+          class="space-y-6 w-full max-w-3xl bg-white dark:bg-neutral-900 p-8 rounded-2xl shadow-xl">
+      {% csrf_token %}
+
+      <!-- Header with Image + Edit Btn -->
+      <div class="flex justify-between items-center mb-10">
+        <div class="flex items-center gap-6 relative">
+          <div class="relative">
+            <!-- ✅ Profile Image with Fallback -->
+            <img src="{% if user.profile.image %}{{ user.profile.image.url }}{% else %}{% static 'images/avatar.png' %}{% endif %}" 
+                 class="w-24 h-24 rounded-full border-4 border-blue-500 shadow-lg object-cover" 
+                 id="profilePicPreview">
+            <label for="profilePicUpload" 
+                   class="absolute bottom-0 right-0 bg-blue-600 text-white p-2 rounded-full shadow cursor-pointer hover:bg-blue-700">
+              📷
+            </label>
+            <input type="file" name="profile_pic" id="profilePicUpload" 
+                   class="hidden editable" accept="image/*" disabled>
+          </div>
+          <div>
+            <h2 class="text-2xl font-bold">{{ user.username }}</h2>
+            <p class="text-gray-500 dark:text-gray-400">{{ user.email }}</p>
+          </div>
+        </div>
+        <button id="editBtn" type="button" 
+                class="px-5 py-2 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 shadow transition">
+          ✏️ Edit Profile
+        </button>
+      </div>
+
+      <h3 class="text-xl font-semibold mb-4">Edit Profile</h3>
+
+      <!-- Username -->
+      <div>
+        <label class="block mb-2 font-medium">Username</label>
+        <input type="text" name="username" value="{{ user.username }}" 
+               class="editable w-full px-4 py-2 rounded-lg bg-gray-100 dark:bg-neutral-800 text-black dark:text-white" disabled>
+      </div>
+
+      <!-- Email -->
+      <div>
+        <label class="block mb-2 font-medium">Email</label>
+        <input type="email" name="email" value="{{ user.email }}" 
+               class="editable w-full px-4 py-2 rounded-lg bg-gray-100 dark:bg-neutral-800 text-black dark:text-white" disabled>
+      </div>
+
+      <!-- Bio -->
+      <div>
+        <label class="block mb-2 font-medium">Bio</label>
+        <textarea name="bio" rows="4" 
+                  class="editable w-full px-4 py-2 rounded-lg bg-gray-100 dark:bg-neutral-800 text-black dark:text-white" disabled>{{ user.profile.bio|default:"Write about yourself..." }}</textarea>
+      </div>
+
+      <!-- Password Reset -->
+      <div class="border-t pt-6">
+        <h3 class="text-xl font-semibold mb-4">Reset Password</h3>
+        <div class="grid md:grid-cols-2 gap-6">
+          <div>
+            <label class="block mb-2 font-medium">New Password</label>
+            <input type="password" name="new_password" 
+                   class="editable w-full px-4 py-2 rounded-lg bg-gray-100 dark:bg-neutral-800 text-black dark:text-white" disabled>
+          </div>
+          <div>
+            <label class="block mb-2 font-medium">Confirm Password</label>
+            <input type="password" name="confirm_password" 
+                   class="editable w-full px-4 py-2 rounded-lg bg-gray-100 dark:bg-neutral-800 text-black dark:text-white" disabled>
+          </div>
+        </div>
+      </div>
+
+      <!-- Buttons -->
+      <div class="flex justify-between mt-8">
+        <button type="reset" 
+                class="editable px-5 py-2 bg-gray-300 dark:bg-neutral-700 text-gray-800 dark:text-gray-200 rounded-lg hover:bg-gray-400 dark:hover:bg-neutral-600 transition hidden">
+          Cancel
+        </button>
+        <div class="flex gap-4">
+          <button type="submit" name="reset_password" 
+                  class="editable px-5 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 shadow transition hidden">
+            Reset Password
+          </button>
+          <button type="submit" name="save_profile" 
+                  class="editable px-5 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 shadow transition hidden">
+            Save Changes
+          </button>
+        </div>
+      </div>
+    </form>
+  </main>
+
+  <!-- ✅ JS -->
+  <script>
+    const toggleBtn = document.getElementById("toggleBtn");
+    const sidebar = document.getElementById("sidebar");
+    const mainContent = document.getElementById("mainContent");
+    const themeToggle = document.getElementById("themeToggle");
+    const html = document.documentElement;
+    const editBtn = document.getElementById("editBtn");
+    const editableFields = document.querySelectorAll(".editable");
+    const profilePicUpload = document.getElementById("profilePicUpload");
+    const profilePicPreview = document.getElementById("profilePicPreview");
+
+    toggleBtn.addEventListener("click", () => {
+      sidebar.classList.toggle("w-64");
+      sidebar.classList.toggle("w-20");
+      sidebar.classList.toggle("collapsed");
+      mainContent.classList.toggle("ml-64");
+      mainContent.classList.toggle("ml-20");
+      document.querySelectorAll(".nav-text, #brandTitle").forEach(el => {
+        el.classList.toggle("hidden");
+      });
+    });
+
+    themeToggle.addEventListener("click", () => {
+      html.classList.toggle("dark");
+      localStorage.setItem("theme", html.classList.contains("dark") ? "dark" : "light");
+    });
+    if (localStorage.getItem("theme") === "dark") {
+      html.classList.add("dark");
+    }
+
+    // Edit toggle
+    editBtn.addEventListener("click", () => {
+      editableFields.forEach(el => {
+        if (el.tagName === "BUTTON") {
+          el.classList.toggle("hidden");
+        } else {
+          el.disabled = !el.disabled;
+        }
+      });
+      editBtn.classList.toggle("hidden");
+    });
+
+    // Profile pic preview
+    profilePicUpload.addEventListener("change", (event) => {
+      const file = event.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          profilePicPreview.src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+  </script>
+</body>
+</html>

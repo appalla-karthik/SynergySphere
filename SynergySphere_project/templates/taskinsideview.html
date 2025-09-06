@@ -78,13 +78,22 @@
   <main class="flex-1 p-8">
     <!-- ✅ Top Bar -->
     <div class="flex justify-between items-center mb-10">
-      <p class="text-sm text-gray-500 dark:text-gray-400">Projects > <span class="font-medium text-gray-900 dark:text-white">{{ project.name }}</span></p>
+      <p class="text-sm text-gray-500 dark:text-gray-400">
+        Projects > <span class="font-medium text-gray-900 dark:text-white">{{ project.name }}</span>
+      </p>
       <div class="flex items-center gap-4">
         <input type="text" placeholder="Search..."
           class="px-4 py-2 rounded-xl bg-gray-200 dark:bg-neutral-800 text-black dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
-        <!-- ✅ New Task button opens newtask.html -->
+
+        <!-- ✅ Add People button (opens modal) -->
+        <button onclick="openModal()" 
+          class="px-5 py-2 bg-purple-500 text-white font-medium rounded-xl hover:bg-purple-600 hover:scale-105 shadow-md transition">
+          + Add People
+        </button>
+
+        <!-- ✅ New Task button -->
         <a href="{% url 'new_task' project.id %}" 
-           class="px-5 py-2 bg-blue-500 text-white font-medium rounded-xl hover:bg-blue-600 hover:scale-105 shadow-md transition">
+          class="px-5 py-2 bg-blue-500 text-white font-medium rounded-xl hover:bg-blue-600 hover:scale-105 shadow-md transition">
           + New Task
         </a>
       </div>
@@ -105,6 +114,27 @@
       {% endfor %}
     </div>
   </main>
+
+  <!-- ✅ Add People Modal -->
+  <div id="addPeopleModal" class="fixed inset-0 hidden items-center justify-center bg-black bg-opacity-50 z-50">
+    <div class="bg-white dark:bg-neutral-900 p-6 rounded-2xl shadow-lg w-full max-w-md relative">
+      <!-- Close button -->
+      <button onclick="closeModal()" class="absolute top-3 right-3 text-gray-400 hover:text-red-500">✕</button>
+      
+      <h2 class="text-lg font-semibold mb-4 text-gray-900 dark:text-white">
+        Add People to {{ project.name }}
+      </h2>
+
+      <!-- Search form -->
+      <<!-- Search form -->
+<input type="text" id="userSearch" placeholder="Search by name or email..."
+  class="w-full mb-4 px-4 py-2 rounded-xl bg-gray-100 dark:bg-neutral-800 text-black dark:text-white focus:ring-2 focus:ring-purple-500 outline-none">
+
+<!-- Search results -->
+<ul id="searchResults" class="space-y-2 max-h-60 overflow-y-auto"></ul>
+
+    </div>
+  </div>
 
   <!-- JS -->
   <script>
@@ -130,6 +160,90 @@
 
     if (localStorage.getItem("theme") === "dark") {
       html.classList.add("dark");
+    }
+
+    // Modal open/close
+    function openModal() {
+      document.getElementById("addPeopleModal").classList.remove("hidden");
+      document.getElementById("addPeopleModal").classList.add("flex");
+    }
+    function closeModal() {
+      document.getElementById("addPeopleModal").classList.add("hidden");
+      document.getElementById("addPeopleModal").classList.remove("flex");
+    }
+
+    // ✅ AJAX Search & Add
+    const searchInput = document.getElementById("userSearch");
+    const resultsBox = document.getElementById("searchResults");
+
+    // Get CSRF token from cookie
+    function getCookie(name) {
+      let cookieValue = null;
+      if (document.cookie && document.cookie !== "") {
+        const cookies = document.cookie.split(";");
+        for (let i = 0; i < cookies.length; i++) {
+          const cookie = cookies[i].trim();
+          if (cookie.substring(0, name.length + 1) === (name + "=")) {
+            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+            break;
+          }
+        }
+      }
+      return cookieValue;
+    }
+    const csrftoken = getCookie("csrftoken");
+
+    searchInput.addEventListener("keyup", () => {
+      const query = searchInput.value.trim();
+      if (query.length < 2) {
+        resultsBox.innerHTML = "";
+        return;
+      }
+
+      fetch(`/search-users/?q=${query}`)
+        .then(res => res.json())
+        .then(data => {
+          resultsBox.innerHTML = "";
+          if (data.length === 0) {
+            resultsBox.innerHTML = `<p class="text-gray-400 text-sm">No users found.</p>`;
+          }
+          data.forEach(user => {
+            const li = document.createElement("li");
+            li.innerHTML = `
+              <div class="flex justify-between items-center p-2 bg-gray-100 dark:bg-neutral-800 rounded-lg">
+                <div>
+                  <p class="font-medium text-gray-800 dark:text-white">${user.username}</p>
+                  <p class="text-xs text-gray-500">${user.email}</p>
+                </div>
+                <button onclick="addUser('${user.email}')" 
+                  class="px-3 py-1 bg-purple-500 text-white text-xs rounded-lg hover:bg-purple-600">
+                  Add
+                </button>
+              </div>
+            `;
+            resultsBox.appendChild(li);
+          });
+        });
+    });
+
+    // ✅ Add user via AJAX POST
+    function addUser(email) {
+      fetch(`/project/{{ project.id }}/add-people/`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+          "X-CSRFToken": csrftoken
+        },
+        body: new URLSearchParams({ email: email })
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          alert(`${email} added to project ✅`);
+        } else {
+          alert(data.error || "Failed to add user ❌");
+        }
+      });
     }
   </script>
 
