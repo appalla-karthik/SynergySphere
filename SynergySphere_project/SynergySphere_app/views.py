@@ -247,15 +247,3 @@ def profile_view(request):
 
     return render(request, "profile.html", {"user": user})
 
-
-# app_name/templatetags/custom_filters.py
-from django import template
-
-register = template.Library()
-
-@register.filter
-def split(value, delimiter=","):
-    """Split string into list by delimiter."""
-    if value:
-        return [item.strip() for item in value.split(delimiter) if item.strip()]
-    return []

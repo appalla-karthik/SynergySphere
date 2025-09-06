@@ -19,60 +19,75 @@
 
   <!-- Sidebar -->
   <aside id="sidebar" class="w-64 bg-white dark:bg-neutral-900 shadow-xl border-r border-gray-200 dark:border-gray-800 flex flex-col justify-between p-4 transition-all duration-500 ease-in-out">
-    <div>
-      <!-- Collapse/Expand Button -->
-      <button id="toggleBtn" class="flex items-center gap-3 mb-6 px-3 py-2 rounded-lg bg-gray-100 dark:bg-neutral-800 hover:bg-gray-200 dark:hover:bg-neutral-700 hover:scale-105 transition">
-        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-gray-700 dark:text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+  <div>
+    <!-- Collapse/Expand Button -->
+    <button id="toggleBtn" class="flex items-center gap-3 mb-6 px-3 py-2 rounded-lg bg-gray-100 dark:bg-neutral-800 hover:bg-gray-200 dark:hover:bg-neutral-700 hover:scale-105 transition">
+      <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-gray-700 dark:text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+      </svg>
+      <span class="font-medium nav-text">Collapse</span>
+    </button>
+
+    <!-- Brand -->
+    <h1 id="brandTitle" class="text-2xl font-bold mb-8 text-gray-800 dark:text-white tracking-tight bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent">
+      SynergySphere
+    </h1>
+
+    <!-- Navigation -->
+    <nav class="space-y-4">
+      <a href="{% url 'dashboard' %}" class="flex items-center gap-2 px-4 py-2 rounded-xl hover:bg-blue-100 dark:hover:bg-blue-900 hover:scale-105 transition">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7h18M3 12h18M3 17h18"/>
         </svg>
-        <span class="font-medium nav-text">Collapse</span>
-      </button>
-
-      <!-- Brand -->
-      <h1 id="brandTitle" class="text-2xl font-bold mb-8 text-gray-800 dark:text-white tracking-tight bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent">
-        SynergySphere
-      </h1>
-
-      <!-- Navigation -->
-      <nav class="space-y-4">
-        <a href="{% url 'dashboard' %}" class="flex items-center gap-2 px-4 py-2 rounded-xl hover:bg-blue-100 dark:hover:bg-blue-900 hover:scale-105 transition">
-          <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7h18M3 12h18M3 17h18"/>
-          </svg>
-          <span class="font-medium nav-text">Projects</span>
-        </a>
-        <a href="{% url 'taskview' %}" class="flex items-center gap-2 px-4 py-2 rounded-xl hover:bg-green-100 dark:hover:bg-green-900 hover:scale-105 transition">
-          <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
-          </svg>
-          <span class="font-medium nav-text">My Tasks</span>
-        </a>
-      </nav>
-    </div>
-
-    <!-- User + Dark Mode Toggle -->
-    <div class="space-y-4">
-      <!-- Dark Mode -->
-      <button id="themeToggle" class="flex items-center gap-3 px-4 py-2 rounded-xl bg-gray-200 dark:bg-neutral-700 text-gray-800 dark:text-gray-200 hover:bg-purple-100 dark:hover:bg-purple-900 hover:scale-105 transition">
-        <svg id="moonIcon" xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 dark:hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12.79A9 9 0 0111.21 3a7 7 0 000 14A9 9 0 0121 12.79z" />
+        <span class="font-medium nav-text">Projects</span>
+      </a>
+      <a href="{% url 'taskview' %}" class="flex items-center gap-2 px-4 py-2 rounded-xl hover:bg-green-100 dark:hover:bg-green-900 hover:scale-105 transition">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
         </svg>
-        <svg id="sunIcon" xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 hidden dark:inline" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v2m0 14v2m9-9h-2M5 12H3m15.364 6.364l-1.414-1.414M7.05 7.05L5.636 5.636m12.728 0l-1.414 1.414M7.05 16.95l-1.414 1.414" />
-        </svg>
-        <span class="text-sm nav-text">Toggle Theme</span>
-      </button>
+        <span class="font-medium nav-text">My Tasks</span>
+      </a>
+    </nav>
+  </div>
 
-      <!-- User -->
-      <div class="flex items-center gap-3 p-3 bg-gray-100 dark:bg-neutral-800 rounded-xl shadow hover:bg-pink-100 dark:hover:bg-pink-900 hover:scale-105 transition">
-        <img src="{% static 'images/avatar.png' %}" alt="user" class="w-10 h-10 rounded-full border border-gray-300 dark:border-gray-700">
-        <div class="nav-text">
-          <p class="font-semibold">Test User</p>
-          <p class="text-gray-500 dark:text-gray-400 text-sm">user@mail</p>
-        </div>
+  <!-- User + Dark Mode Toggle -->
+  <div class="space-y-4">
+    <!-- Dark Mode -->
+    <button id="themeToggle" class="flex items-center gap-3 px-4 py-2 rounded-xl bg-gray-200 dark:bg-neutral-700 text-gray-800 dark:text-gray-200 hover:bg-purple-100 dark:hover:bg-purple-900 hover:scale-105 transition">
+      <svg id="moonIcon" xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 dark:hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12.79A9 9 0 0111.21 3a7 7 0 000 14A9 9 0 0121 12.79z" />
+      </svg>
+      <svg id="sunIcon" xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 hidden dark:inline" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v2m0 14v2m9-9h-2M5 12H3m15.364 6.364l-1.414-1.414M7.05 7.05L5.636 5.636m12.728 0l-1.414 1.414M7.05 16.95l-1.414 1.414" />
+      </svg>
+      <span class="text-sm nav-text">Toggle Theme</span>
+    </button>
+
+    <!-- ✅ User Profile Clickable -->
+    <a href="{% url 'profile' %}" class="flex items-center gap-3 p-3 bg-gray-100 dark:bg-neutral-800 rounded-xl shadow hover:bg-pink-100 dark:hover:bg-pink-900 hover:scale-105 transition">
+      <img src="{% if request.user.is_authenticated and request.user.profile.image %}{{ request.user.profile.image.url }}{% else %}{% static 'images/avatar.png' %}{% endif %}" 
+           alt="user" 
+           class="w-10 h-10 rounded-full border border-gray-300 dark:border-gray-700">
+      <div class="nav-text">
+        <p class="font-semibold">
+          {% if request.user.is_authenticated %}
+            {{ request.user.username }}
+          {% else %}
+            Guest
+          {% endif %}
+        </p>
+        <p class="text-gray-500 dark:text-gray-400 text-sm truncate">
+          {% if request.user.is_authenticated %}
+            {{ request.user.email }}
+          {% else %}
+            guest@example.com
+          {% endif %}
+        </p>
       </div>
-    </div>
-  </aside>
+    </a>
+  </div>
+</aside>
+
 
   <!-- Main Content -->
   <main class="flex-1 p-8">
@@ -126,13 +141,11 @@
       </h2>
 
       <!-- Search form -->
-      <<!-- Search form -->
-<input type="text" id="userSearch" placeholder="Search by name or email..."
-  class="w-full mb-4 px-4 py-2 rounded-xl bg-gray-100 dark:bg-neutral-800 text-black dark:text-white focus:ring-2 focus:ring-purple-500 outline-none">
+      <input type="text" id="userSearch" placeholder="Search by name or email..."
+        class="w-full mb-4 px-4 py-2 rounded-xl bg-gray-100 dark:bg-neutral-800 text-black dark:text-white focus:ring-2 focus:ring-purple-500 outline-none">
 
-<!-- Search results -->
-<ul id="searchResults" class="space-y-2 max-h-60 overflow-y-auto"></ul>
-
+      <!-- Search results -->
+      <ul id="searchResults" class="space-y-2 max-h-60 overflow-y-auto"></ul>
     </div>
   </div>
 
